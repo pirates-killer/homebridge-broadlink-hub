@@ -118,9 +118,17 @@ class RMSimulator {
       case P.RM.SWEEP_FREQUENCY:
         return ok();
       case P.RM.CHECK_DATA:
+        if (this.learnAfter > 0) {this.learnAfter -= 1; return fail(-10);} // user hasn't pressed yet
         return this.learned ? ok(Buffer.from(this.learned, 'hex')) : fail(-10);
-      case P.RM.CHECK_FREQUENCY:
+      case P.RM.CHECK_FREQUENCY: {
+        if (this.frequencyAfter > 0) {this.frequencyAfter -= 1; return ok(Buffer.alloc(5));}
+        const out = Buffer.alloc(5);
+        out[0] = 1;
+        out.writeUInt32LE(Math.round((this.frequency || 433.92) * 1000), 1);
+        return ok(out);
+      }
       case P.RM.FIND_RF_PACKET:
+        this.rfPacketPayload = data.toString('hex');
         return ok(Buffer.from([1]));
       case P.RM.CHECK_SENSORS:
       case P.RM.CHECK_TEMPERATURE: {

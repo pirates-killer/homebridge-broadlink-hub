@@ -1,68 +1,94 @@
-# Homebridge Broadlink RM Pro
+# BroadLink Hub for Homebridge
 
-**After 7+ years of loyal service from this plugin, I'm an no longer using it. This makes maintaining it now impossible as I have no way to test changes.** 
+Control your TV, air conditioner, fans, lights, blinds and anything else with an IR or RF remote from the Apple Home app and Siri, through a BroadLink RM (RM mini 3, RM Pro, RM4 mini, RM4 Pro and relatives).
 
-**I hope that someone will pick this up and build on it, as I did from @lprhodes. If I'm completely honest, I think the next step on this should be a full re-build to smooth out some of the imperfections. That has been my hope for the last two years but unfortunately that remained a hope and I never found the time.**
+- **Set up in the Homebridge UI.** Find your BroadLink, add accessories, and learn each code by pointing your remote at it. No JSON editing and no reading log files. You can also paste codes from Home Assistant / SmartIR (base64) or Pronto.
+- **Fast.** In our tests, a tap in the Home app reaches the BroadLink in about 2 ms of plugin time. Commands wait for the device's acknowledgement, and the timeout learns your network's real round trip.
+- **Reliable.** If the BroadLink reboots, the plugin logs back in before your next tap. Locked devices are reported clearly. Commands sent while Homebridge is still starting are queued instead of dropped.
+- **Finds devices on tricky Wi-Fi.** When the network blocks discovery broadcasts, it asks every address on your subnet directly.
+- **Drop-in successor to [homebridge-broadlink-rm](https://github.com/kiwi-cam/homebridge-broadlink-rm).** Same config, same accessories in the Home app (rooms, scenes and automations stay), same saved state.
+- **Local only.** No BroadLink cloud account, two runtime dependencies, Homebridge 1.8+ and 2.x, Node 20–26.
 
-**Good luck to anyone that can add to this wonderful community and keep this plug in alive. I'm happy to help if I can.**
+## Install
 
-## Introduction
-Welcome to the Broadlink RM Mini and Broadlink RM Pro plugin for [Homebridge](https://github.com/nfarina/homebridge).
+In the Homebridge UI, search the Plugins tab for **BroadLink Hub**, or:
 
-This plugin allows you to control your RM Mini and RM Pro with HomeKit using the Home app and Siri.
+```sh
+npm install -g homebridge-broadlink-hub
+```
 
-## Like this plugin?
+Then open the plugin's **Settings**:
 
-If you like this plugin and want to show your support then please star the Github repo, or better yet; buy me a drink using [Paypal](https://paypal.me/kiwicamRM).
+1. **Find devices on my network**, then **Add** your RM. (Or type its IP address.)
+2. **Add accessory**, then pick a type (switch, light, fan, TV, air conditioner, blind…) and name it.
+3. For each code, press **Learn / paste**, then **Learn IR** (or **Learn RF** for 433/315 MHz remotes on Pro models), and press the button on your remote. Press **Test** to check it, then **Use this code**.
+4. Press **Save** and restart Homebridge.
 
-Thank you!
+TVs appear as separate accessories: add them in the Home app with **Add Accessory** using your Homebridge PIN.
 
-## Installation
+## Coming from homebridge-broadlink-rm
 
-This plugin can be added via the Web interface, or if you perfer the terminal:
-   `npm install -g homebridge-broadlink-rm-pro`
-For more information, refer to the [documentation](https://broadlink.kiwicam.nz/#installation).
+1. Uninstall `homebridge-broadlink-rm` / `homebridge-broadlink-rm-pro`. Both register the `BroadlinkRM` platform, so keep only one installed.
+2. Install `homebridge-broadlink-hub` and restart. Your existing config is used as-is.
 
-## Documentation
+Accessory IDs come from the platform name and each accessory's name, so your Home app setup stays as it was. Saved accessory state (`plugin-persist/homebridge-broadlink-rm`) is read and written in the same format. Renaming an accessory still makes HomeKit treat it as new; the settings page warns you before you do.
 
-**Documentation can be found [here](https://broadlink.kiwicam.nz).** If you have any trouble after reading through the information please raise an issue and we'll help out as best we can.
+## Supported devices
 
-If the plugin is unable to discover your device, it's likely you've locked the device with the cloud so it no longer accepts local connections. In this case, follow these steps:
-1. Open the [Broadlink app](https://apps.apple.com/us/app/broadlink/id1450257910)
-2. From the Home screen, tap on your Broadlink device
-3. Tap the ... in the top right
-4. Scroll down and toggle "Lock device" to Off
-5. Tap OK when prompted "Confirm to unlock the device"
+RM2, RM3 / RM mini 3 (all known variants), RM Pro / Pro+, RM4 mini, RM4C mini, RM4S, RM4 TV mate, RM4 Pro, RM4C Pro. The device list is cross-checked against [python-broadlink](https://github.com/mjg59/python-broadlink). An unknown RM can be added by IP address with "RM4 family" / "Has RF" set.
 
-<img src="https://i.imgur.com/DMTUbDo.png" width="40%" height="40%">
+If your BroadLink is not found or refuses to connect, it is probably **locked**: in the BroadLink app, open the device, tap **…**, and turn **Lock device** off.
 
-This plugin should now be able to discover your device.
+## Accessory types
 
-## Transport options (5.x)
+| Type | Codes |
+| --- | --- |
+| `switch`, `outlet` | on, off (or one code) · auto-off, stateless |
+| `light` | on, off · brightness and colour codes |
+| `fan`, `fanv1` | on, off, speeds, swing, direction |
+| `tv` | power, inputs, remote keys (Control Centre remote), volume |
+| `air-conditioner` | off, on, one code per mode and temperature |
+| `heater-cooler` | modes, temperatures, swing ([details](docs/heater-cooler.md)) |
+| `garage-door-opener`, `lock`, `window-covering`, `window` | open/close/stop, lock/unlock |
+| `air-purifier`, `humidifier-dehumidifier`, `temperatureSensor`, `humiditySensor`, `switch-multi`, `switch-repeat`, `switch-multi-repeat` | see the JSON tab |
 
-Set these at platform level or per `hosts` entry:
+Every option of homebridge-broadlink-rm works unchanged. Its option reference is at [broadlink.kiwicam.nz](https://broadlink.kiwicam.nz). The settings page shows the common options as a form, and every option in each accessory's **JSON** tab.
+
+## Connection options
+
+Set these in **Settings** (all devices) or per entry under `hosts`:
 
 | Option | Default | Meaning |
 | --- | --- | --- |
-| `port` | `80` | UDP port of the RM device |
-| `timeout` | `2000` | ms to wait for the device's reply to each command |
-| `retries` | `0` | resend a code after a timeout. Leave at 0 for toggle codes (a lost *reply* would make the device fire twice) |
-| `sendGap` | `0` | minimum ms between two transmissions to the same device |
+| `sendGap` | `0` | Minimum ms between two codes sent to the same BroadLink. Raise it if a device misses codes in quick succession. |
+| `retries` | `0` | Resend a code when no reply arrives. Keep `0` for power-toggle codes: if the reply was lost after the code ran, a resend would toggle the device back. |
+| `timeout` | `2000` | Upper limit (ms) for waiting on a reply. The actual wait adapts to your network, usually 250 ms. |
+| `port` | `80` | UDP port of the BroadLink. |
 
-```json
-"hosts": [{ "address": "192.168.1.50", "mac": "34:ea:34:5a:c0:de", "isRM4": true, "isRFSupported": true, "sendGap": 100 }]
-```
+## How it compares
+
+Measured with real Homebridge 2.5 against a simulated RM4 Pro (`npm run test:e2e -- <dir> --bench`):
+
+| | homebridge-broadlink-rm 4.4.21 | BroadLink Hub |
+| --- | --- | --- |
+| Switch: tap → code sent (median / worst) | 2.2 / 12.3 ms | 1.7 / 2.6 ms |
+| Air conditioner mode change | ~300 ms | ~2 ms |
+| A lost reply blocks the next command for | (no replies checked) | ~250 ms |
+| AC temperature read without a sensor | hangs, HomeKit "No Response" | immediate |
+| After the BroadLink reboots | commands fail until Homebridge restarts | recovers automatically |
 
 ## Development
 
-```
-npm test           # all tests
-npm run test:core  # protocol + persistence
-node test/sim/rmSimulator.js 47123   # standalone RM simulator
-npm run test:e2e -- <storage-dir>    # boots real Homebridge 2 against the simulator
+```sh
+npm test                               # unit, protocol, settings-backend and legacy tests
+npm run lint
+node test/sim/rmSimulator.js 47123     # standalone RM simulator
+node test/ui-preview/serve.js [config.json]   # settings page in a browser, backed by the simulator
+npm run test:e2e -- <storage-dir>      # boots real Homebridge against the simulator
 ```
 
-## Thanks
-Original: Thanks to @tattn (https://github.com/tattn/homebridge-rm-mini3), @PJCzx (https://github.com/PJCzx/homebridge-thermostat), @momodalo (https://github.com/momodalo/broadlinkjs), and @lprhodes (https://github.com/lprhodes/homebridge-broadlink-rm) whose time and effort got this started.
+`lib/broadlink` is a standalone BroadLink RM client (discovery, auth, IR/RF send and learning) with packets verified byte-for-byte against python-broadlink.
 
-In this fork: Thanks to @kiwi-cam (https://github.com/kiwi-cam), @Cloudore (https://github.com/Cloudore) and @Faisalthe01 (https://github.com/Faisalthe01) for your work!
+## Credits and licence
+
+Built on homebridge-broadlink-rm by [@lprhodes](https://github.com/lprhodes), [@kiwi-cam](https://github.com/kiwi-cam) and contributors, and the work they credit (@tattn, @PJCzx, @momodalo). Apache License 2.0; see [LICENSE](LICENSE) and [NOTICE](NOTICE).

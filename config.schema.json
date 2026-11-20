@@ -1,0 +1,54 @@
+{
+  "pluginAlias": "BroadlinkRM",
+  "pluginType": "platform",
+  "singular": true,
+  "customUi": true,
+  "strictValidation": false,
+  "headerDisplay": "Control IR and RF devices through BroadLink RM remotes (RM mini, RM Pro, RM4, RM4 Pro). Find your BroadLink, add accessories and learn their codes right here. Coming from homebridge-broadlink-rm? Your existing config works as-is, with the same accessories in the Home app.",
+  "footerDisplay": "Codes are sent on your local network only; no BroadLink cloud account is used.",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "name": { "title": "Platform name", "type": "string", "default": "BroadLink Hub" },
+      "hosts": {
+        "title": "BroadLink devices",
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "address": { "title": "IP address or host name", "type": "string" },
+            "mac": { "title": "MAC address", "type": "string" },
+            "isRM4": { "title": "RM4 family", "type": "boolean" },
+            "isRFSupported": { "title": "Has RF (Pro models)", "type": "boolean" },
+            "port": { "title": "UDP port", "type": "integer", "minimum": 1, "maximum": 65535 },
+            "timeout": { "title": "Reply timeout cap (ms)", "type": "integer", "minimum": 100, "maximum": 10000 },
+            "retries": { "title": "Resends after no reply", "type": "integer", "minimum": 0, "maximum": 5 },
+            "sendGap": { "title": "Pause between codes (ms)", "type": "integer", "minimum": 0, "maximum": 5000 }
+          },
+          "required": ["address"]
+        }
+      },
+      "accessories": {
+        "title": "Accessories",
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "name": { "title": "Name", "type": "string" },
+            "type": { "title": "Type", "type": "string" },
+            "host": { "title": "BroadLink device (IP or MAC)", "type": "string" },
+            "disabled": { "title": "Disabled", "type": "boolean" }
+          },
+          "required": ["name", "type"]
+        }
+      },
+      "logLevel": { "title": "Log detail", "type": "string", "enum": ["trace", "debug", "info", "warning", "error", "critical", "none"] },
+      "hideLearnButton": { "title": "Hide the Learn switch", "type": "boolean" },
+      "hideScanFrequencyButton": { "title": "Hide the Scan Frequency switch", "type": "boolean" },
+      "timeout": { "title": "Reply timeout cap (ms)", "type": "integer", "minimum": 100, "maximum": 10000 },
+      "retries": { "title": "Resends after no reply", "type": "integer", "minimum": 0, "maximum": 5 },
+      "sendGap": { "title": "Pause between codes (ms)", "type": "integer", "minimum": 0, "maximum": 5000 },
+      "deviceDiscoveryTimeout": { "title": "Discovery time (s)", "type": "integer", "minimum": 5, "maximum": 600 }
+    }
+  }
+}

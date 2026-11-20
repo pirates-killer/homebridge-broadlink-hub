@@ -1,0 +1,140 @@
+<style>
+  .bh-card { border: 1px solid rgba(127, 127, 127, .3); border-radius: .5rem; padding: 1rem; margin-bottom: 1rem; }
+  .bh-card h5 { margin: 0 0 .25rem; display: flex; align-items: center; gap: .5rem; }
+  .bh-hint { font-size: .85rem; opacity: .75; margin-bottom: .75rem; }
+  .bh-row { display: flex; gap: .5rem; flex-wrap: wrap; align-items: flex-end; }
+  .bh-row > .bh-grow { flex: 1 1 12rem; }
+  .bh-field label { display: block; font-size: .85rem; margin-bottom: .2rem; }
+  .bh-list { width: 100%; border-collapse: collapse; font-size: .92rem; }
+  .bh-list td, .bh-list th { padding: .4rem .35rem; border-top: 1px solid rgba(127, 127, 127, .2); vertical-align: middle; }
+  .bh-list th { font-weight: 600; font-size: .8rem; opacity: .7; border-top: 0; }
+  .bh-list td.bh-actions { text-align: right; white-space: nowrap; }
+  .bh-badge { display: inline-block; font-size: .75rem; padding: .05rem .45rem; border-radius: 1rem; border: 1px solid rgba(127, 127, 127, .4); margin-left: .25rem; }
+  .bh-badge.ok { border-color: #28a745; color: #28a745; }
+  .bh-badge.bad { border-color: #dc3545; color: #dc3545; }
+  .bh-badge.warn { border-color: #d39e00; color: #d39e00; }
+  .bh-result { margin-top: .5rem; font-size: .9rem; min-height: 1.3em; }
+  .bh-result.ok { color: #28a745; }
+  .bh-result.bad { color: #dc3545; }
+  .bh-code-btn { min-width: 6.5rem; }
+  .bh-code-set { color: #28a745; }
+  .bh-code-row { display: flex; align-items: center; gap: .5rem; padding: .3rem 0; border-top: 1px solid rgba(127, 127, 127, .15); }
+  .bh-code-row > .bh-label { flex: 1 1 auto; }
+  .bh-section { margin-top: 1rem; font-weight: 600; font-size: .9rem; }
+  .bh-grid { border-collapse: collapse; font-size: .85rem; }
+  .bh-grid td, .bh-grid th { padding: .15rem .25rem; text-align: center; }
+  .bh-dot { width: 2.1rem; padding: .1rem 0; }
+  .bh-drawer { position: sticky; bottom: 0; z-index: 5; border: 2px solid #1d7af3; border-radius: .5rem; padding: 1rem; margin-bottom: 1rem; background: var(--bh-bg, #fff); box-shadow: 0 -4px 16px rgba(0, 0, 0, .15); }
+  body.dark-mode .bh-drawer { --bh-bg: #1e1e1e; }
+  .bh-drawer textarea, .bh-json { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .8rem; }
+  .bh-stage { font-size: .95rem; margin: .5rem 0; }
+  .bh-tabs { display: flex; gap: .25rem; margin: .75rem 0; }
+  .bh-hidden { display: none !important; }
+  .bh-types { display: grid; grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr)); gap: .5rem; }
+  .bh-type { text-align: left; padding: .5rem .6rem; }
+  .bh-type small { display: block; opacity: .7; font-size: .75rem; white-space: normal; }
+  .bh-sticky-note { font-size: .85rem; padding: .5rem .75rem; border-radius: .4rem; background: rgba(29, 122, 243, .1); margin-bottom: 1rem; }
+</style>
+
+<div class="bh-sticky-note" id="bh-unsaved">Changes made here are kept in the form until you press <b>Save</b> at the bottom of this window.</div>
+
+<!-- Devices -->
+<div class="bh-card">
+  <h5>BroadLink devices</h5>
+  <div class="bh-hint">The RM remotes Homebridge talks to. Adding them here (instead of relying on automatic discovery) makes startup faster and works on networks that block discovery.</div>
+  <table class="bh-list" id="bh-hosts"></table>
+  <div class="bh-row" style="margin-top:.75rem">
+    <button id="bh-scan" class="btn btn-primary">Find devices on my network</button>
+    <div class="bh-field bh-grow"><label for="bh-ip">…or add by IP address</label><input id="bh-ip" class="form-control" placeholder="192.168.1.50" autocomplete="off" spellcheck="false"></div>
+    <button id="bh-ip-add" class="btn btn-secondary">Check &amp; add</button>
+  </div>
+  <div id="bh-scan-result" class="bh-result"></div>
+  <table class="bh-list" id="bh-found"></table>
+</div>
+
+<!-- Accessories -->
+<div class="bh-card">
+  <h5>Accessories <span class="bh-badge" id="bh-acc-count"></span></h5>
+  <div class="bh-hint">What appears in the Home app. Each one sends the IR/RF codes you learn below.</div>
+  <table class="bh-list" id="bh-accessories"></table>
+  <div class="bh-row" style="margin-top:.75rem">
+    <button id="bh-add" class="btn btn-primary">Add accessory</button>
+  </div>
+</div>
+
+<!-- Accessory editor -->
+<div class="bh-card bh-hidden" id="bh-editor">
+  <h5 id="bh-ed-title">New accessory</h5>
+  <div id="bh-ed-types" class="bh-types"></div>
+  <div id="bh-ed-body" class="bh-hidden">
+    <div class="bh-row">
+      <div class="bh-field bh-grow"><label for="bh-ed-name">Name in the Home app</label><input id="bh-ed-name" class="form-control" autocomplete="off"></div>
+      <div class="bh-field bh-grow"><label for="bh-ed-host">BroadLink device</label><select id="bh-ed-host" class="form-control"></select></div>
+    </div>
+    <div id="bh-ed-rename" class="bh-result bad bh-hidden">Renaming makes the Home app treat this as a new accessory: its room, scenes and automations would need setting up again.</div>
+    <div class="bh-tabs">
+      <button class="btn btn-sm btn-secondary" data-tab="form">Settings &amp; codes</button>
+      <button class="btn btn-sm btn-outline-secondary" data-tab="json">JSON (all options)</button>
+    </div>
+    <div id="bh-ed-form"></div>
+    <div id="bh-ed-json" class="bh-hidden">
+      <div class="bh-hint">Every option of this accessory, including ones the form doesn't show. See the docs for the full list.</div>
+      <textarea id="bh-ed-json-text" class="form-control bh-json" rows="14" spellcheck="false"></textarea>
+      <div id="bh-ed-json-result" class="bh-result"></div>
+    </div>
+    <div class="bh-row" style="margin-top:1rem">
+      <button id="bh-ed-save" class="btn btn-primary">Save accessory</button>
+      <button id="bh-ed-cancel" class="btn btn-secondary">Cancel</button>
+    </div>
+    <div id="bh-ed-result" class="bh-result"></div>
+  </div>
+</div>
+
+<!-- Code drawer: shared by every code field and the standalone tool -->
+<div class="bh-drawer bh-hidden" id="bh-drawer">
+  <h5 id="bh-dr-title" style="margin-top:0">Code</h5>
+  <div class="bh-row">
+    <div class="bh-field bh-grow"><label for="bh-dr-host">Learn / test with</label><select id="bh-dr-host" class="form-control"></select></div>
+    <button id="bh-dr-ir" class="btn btn-primary">Learn IR</button>
+    <button id="bh-dr-rf" class="btn btn-primary">Learn RF</button>
+    <button id="bh-dr-stop" class="btn btn-warning bh-hidden">Stop</button>
+  </div>
+  <div id="bh-dr-stage" class="bh-stage"></div>
+  <div class="bh-field"><label for="bh-dr-code">Code (BroadLink hex; you can also paste base64 from Home Assistant / SmartIR, or a Pronto code)</label>
+    <textarea id="bh-dr-code" class="form-control" rows="3" spellcheck="false"></textarea></div>
+  <div class="bh-row" style="margin-top:.5rem">
+    <button id="bh-dr-test" class="btn btn-secondary">Test (send once)</button>
+    <button id="bh-dr-clear" class="btn btn-outline-secondary">Clear</button>
+    <span class="bh-grow"></span>
+    <button id="bh-dr-done" class="btn btn-success">Use this code</button>
+    <button id="bh-dr-close" class="btn btn-secondary">Close</button>
+  </div>
+  <div id="bh-dr-result" class="bh-result"></div>
+</div>
+
+<!-- Standalone learning tool -->
+<div class="bh-card">
+  <h5>Learn or test a code</h5>
+  <div class="bh-hint">Capture a code from any remote, check it works, copy it anywhere.</div>
+  <button id="bh-tool" class="btn btn-secondary">Open code tool</button>
+</div>
+
+<!-- Settings -->
+<div class="bh-card">
+  <h5>Settings</h5>
+  <div class="bh-row">
+    <div class="bh-field bh-grow"><label for="bh-loglevel">Log detail</label>
+      <select id="bh-loglevel" class="form-control">
+        <option value="">Normal (info)</option><option value="debug">Debug</option><option value="warning">Warnings only</option><option value="error">Errors only</option><option value="none">None</option>
+      </select></div>
+    <div class="bh-field bh-grow"><label for="bh-sendgap">Pause between codes (ms)</label><input id="bh-sendgap" class="form-control" type="number" min="0" max="2000" placeholder="0"></div>
+    <div class="bh-field bh-grow"><label for="bh-retries">Resend after no reply</label><input id="bh-retries" class="form-control" type="number" min="0" max="3" placeholder="0"></div>
+  </div>
+  <div class="bh-row" style="margin-top:.6rem">
+    <label style="display:flex;gap:.4rem;align-items:center;margin:0"><input id="bh-hidelearn" type="checkbox"> Hide the "Learn" and "Scan Frequency" switches in the Home app (this page replaces them)</label>
+  </div>
+  <div class="bh-hint" style="margin-top:.5rem">Leave "Resend" at 0 for power-toggle codes: if a reply is lost after the code already ran, a resend would toggle the device back.</div>
+  <div id="bh-settings-result" class="bh-result"></div>
+</div>
+
+<script src="app.js?v=0.1.0"></script>
