@@ -1,0 +1,18 @@
+BroadLink Hub (homebridge-broadlink-hub)
+Copyright 2026 pirates-killer
+
+This product includes software derived from homebridge-broadlink-rm
+(https://github.com/kiwi-cam/homebridge-broadlink-rm, originally
+https://github.com/lprhodes/homebridge-broadlink-rm), licensed under the
+Apache License, Version 2.0. Copyright Luke Rhodes, Cameron McConnochie
+(kiwi-cam) and contributors.
+
+Changes from that work (2026): new BroadLink protocol layer (lib/broadlink)
+replacing kiwicam-broadlinkjs-rm; reply validation, adaptive timeouts and
+automatic re-authentication; dependency removal; Homebridge 2 fixes; latency
+fixes in the air-conditioner accessory; Homebridge UI settings page with
+device discovery and code learning. See CHANGELOG.md for details.
+
+Device type identifiers were cross-checked against python-broadlink
+(https://github.com/mjg59/python-broadlink, MIT License). No code from it is
+included; test vectors in test/fixtures were generated with it.
