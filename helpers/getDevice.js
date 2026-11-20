@@ -34,6 +34,9 @@ const discoverDevices = (automatic = true, log, logLevel, deviceDiscoveryTimeout
     // Broadcast every 2 s for the discovery window; devices that answer are
     // authenticated and then monitored with unicast hellos.
     broadlink.discover();
+    // Broadcasts are often dropped by Wi-Fi access points; a one-off unicast
+    // sweep of the local subnet finds those devices too.
+    broadlink.discoverOnce().catch(() => {});
     const interval = setInterval(() => broadlink.discover(), 2000);
     setTimeout(() => clearInterval(interval), deviceDiscoveryTimeout * 1000).unref();
     interval.unref();
