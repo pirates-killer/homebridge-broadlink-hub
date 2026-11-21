@@ -1,7 +1,12 @@
-const FakeServiceManager = require('../test/helpers/fakeServiceManager')
-const ServiceManager = require('./serviceManager')
+'use strict';
 
-module.exports =  {
+const ServiceManager = require('./serviceManager');
+
+module.exports = {
   ServiceManager,
-  FakeServiceManager
-}
+  // Test-only service manager. Loaded on first use: the test folder is not
+  // part of the published package.
+  get FakeServiceManager() {
+    return require('../test/helpers/fakeServiceManager');
+  },
+};

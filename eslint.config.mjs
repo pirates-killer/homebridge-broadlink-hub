@@ -24,6 +24,7 @@ export default defineConfig([
                               ...globals.browser,
                               ...globals.node,
                               ...globals.jest,
+                              ...globals.mocha,
                               Atomics: "readonly",
                               SharedArrayBuffer: "readonly",
                               HistoryService: true,
