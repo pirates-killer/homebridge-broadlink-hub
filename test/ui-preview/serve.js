@@ -13,23 +13,31 @@ const path = require('path');
 const { fork } = require('child_process');
 const RMSimulator = require('../sim/rmSimulator');
 
+// --real: talk to the BroadLink devices in the config (Learn/Test then use your
+// real RM and fire real IR/RF); otherwise everything goes to a simulator.
+const real = process.argv.includes('--real');
+const args = process.argv.slice(2).filter((a) => !a.startsWith('--'));
 const publicDir = path.join(__dirname, '..', '..', 'homebridge-ui', 'public');
-const port = Number(process.argv[3] || 8581);
+const port = Number(args[1] || 8581);
 
 (async () => {
-  const sim = new RMSimulator({ devtype: 0x520b });
-  await sim.start();
-  sim.learned = '26001a001d1d1d1d1d3a1d3a1d3a1d1d1d3a1d1d1d1d1d1d1d1d1d3a000d05';
-  sim.learnAfter = 4;
+  const sim = real ? null : new RMSimulator({ devtype: 0x520b });
+  if (sim) {
+    await sim.start();
+    sim.learned = '26001a001d1d1d1d1d3a1d3a1d3a1d1d1d3a1d1d1d1d1d1d1d1d1d3a000d05';
+    sim.learnAfter = 4;
+  }
 
   let config = [{ platform: 'BroadlinkRM', name: 'BroadLink Hub', hosts: [], accessories: [] }];
-  if (process.argv[2]) {
-    const file = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
+  if (args[0]) {
+    const file = JSON.parse(fs.readFileSync(args[0], 'utf8'));
     config = (file.platforms || [file]).filter((p) => p.platform === 'BroadlinkRM');
   }
-  for (const block of config) {
-    for (const h of block.hosts || []) {Object.assign(h, { address: '127.0.0.1', port: sim.port });}
-    for (const a of block.accessories || []) {if (a.host) {a.host = '127.0.0.1';}}
+  if (sim) {
+    for (const block of config) {
+      for (const h of block.hosts || []) {Object.assign(h, { address: '127.0.0.1', port: sim.port });}
+      for (const a of block.accessories || []) {if (a.host) {a.host = '127.0.0.1';}}
+    }
   }
 
   const ui = fork(path.join(__dirname, '..', '..', 'homebridge-ui', 'server.js'), [], { stdio: ['ignore', 'inherit', 'inherit', 'ipc'] });
@@ -68,7 +76,7 @@ window.homebridge = (() => {
   http.createServer(async (req, res) => {
     if (req.url === '/api/config' && req.method === 'GET') {res.setHeader('content-type', 'application/json'); return res.end(JSON.stringify(config));}
     if (req.url === '/api/config' && req.method === 'POST') {config = await body(req); res.setHeader('content-type', 'application/json'); return res.end(JSON.stringify(config));}
-    if (req.url === '/api/sim') {res.setHeader('content-type', 'application/json'); return res.end(JSON.stringify({ sent: sim.sent, port: sim.port }));}
+    if (req.url === '/api/sim') {res.setHeader('content-type', 'application/json'); return res.end(JSON.stringify(sim ? { sent: sim.sent, port: sim.port } : { real: true }));}
     if (req.url === '/api/request') {
       const { path: p, body: b } = await body(req);
       const requestId = String(++seq);
@@ -93,5 +101,5 @@ window.homebridge = (() => {
     }
     res.statusCode = 404;
     return res.end('not found');
-  }).listen(port, '127.0.0.1', () => console.log(`Settings preview: http://127.0.0.1:${port}/  (RM simulator on 127.0.0.1:${sim.port})`));
+  }).listen(port, '127.0.0.1', () => console.log(`Settings preview: http://127.0.0.1:${port}/  ${sim ? `(RM simulator on 127.0.0.1:${sim.port})` : '(REAL devices: Test sends real IR/RF)'}`));
 })();
