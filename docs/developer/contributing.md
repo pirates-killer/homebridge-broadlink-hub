@@ -43,9 +43,12 @@ Screenshots in `docs/images/` are taken from the real Homebridge UI against the 
 
 ## Releasing
 
-1. Update `CHANGELOG.md` and bump `version` in `package.json`.
+1. Bump `version` in `package.json` and add its `CHANGELOG.md` section.
 2. Merge to `main` (CI must be green).
-3. Create a GitHub release with tag `v<version>`. The `publish` workflow checks the tag matches `package.json` and publishes to npm with provenance (needs the `NPM_TOKEN` secret).
+3. On GitHub, publish a release with tag `v<version>` (target `main`) and paste that `CHANGELOG.md` section as the notes. The Homebridge UI shows these notes in its update dialog.
+4. The `publish` workflow checks the tag matches `package.json`, then publishes to npm with provenance via npm Trusted Publishing (no token or 2FA prompt). A version that is already on npm is skipped.
+
+One-time setup: on npmjs.com, open the package → Settings → Trusted Publisher → GitHub Actions, and enter this repository and the workflow file `publish.yml`.
 
 ## Licence
 
