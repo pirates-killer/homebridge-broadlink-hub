@@ -89,6 +89,38 @@ npm run test:e2e -- <storage-dir>      # boots real Homebridge against the simul
 
 `lib/broadlink` is a standalone BroadLink RM client (discovery, auth, IR/RF send and learning) with packets verified byte-for-byte against python-broadlink.
 
-## Credits and licence
+## Special thanks & credits
 
-Built on homebridge-broadlink-rm by [@lprhodes](https://github.com/lprhodes), [@kiwi-cam](https://github.com/kiwi-cam) and contributors, and the work they credit (@tattn, @PJCzx, @momodalo). Apache License 2.0; see [LICENSE](LICENSE) and [NOTICE](NOTICE).
+BroadLink Hub stands on the work of many people. Thank you all. (The [full credits page](https://pirates-killer.github.io/homebridge-broadlink-hub/#/credits) says what each one contributed.)
+
+**The plugin it grew from**
+- [homebridge-broadlink-rm](https://github.com/lprhodes/homebridge-broadlink-rm) by Luke Rhodes ([@lprhodes](https://github.com/lprhodes)), who created the original plugin.
+- [Its fork](https://github.com/kiwi-cam/homebridge-broadlink-rm) by Cameron McConnochie ([@kiwi-cam](https://github.com/kiwi-cam)), who maintained it for more than seven years, plus the [documentation site](https://broadlink.kiwicam.nz) that inspired ours, and [broadlinkjs-rm](https://github.com/kiwi-cam/broadlinkjs-rm).
+- [@Cloudore](https://github.com/Cloudore), [@Faisalthe01](https://github.com/Faisalthe01) and [every contributor](https://github.com/kiwi-cam/homebridge-broadlink-rm/graphs/contributors) to homebridge-broadlink-rm.
+- [@tattn](https://github.com/tattn) ([homebridge-rm-mini3](https://github.com/tattn/homebridge-rm-mini3)), [@PJCzx](https://github.com/PJCzx) ([homebridge-thermostat](https://github.com/PJCzx/homebridge-thermostat)) and [@momodalo](https://github.com/momodalo) ([broadlinkjs](https://github.com/momodalo/broadlinkjs)), credited by the original plugin for getting it started.
+
+**Protocol knowledge**
+- [python-broadlink](https://github.com/mjg59/python-broadlink) by Matthew Garrett ([@mjg59](https://github.com/mjg59)) and contributors: device table cross-check and byte-for-byte test vectors (no code included).
+- The official **BroadLink** app, whose control timing we studied for interoperability. Also [LIRC](https://www.lirc.org) for the pulse model behind Pronto conversion.
+
+**Platform and libraries**
+- [Homebridge](https://github.com/homebridge/homebridge), originally by Nick Farina ([@nfarina](https://github.com/nfarina)), plus [HAP-NodeJS](https://github.com/homebridge/HAP-NodeJS), the [Homebridge UI](https://github.com/homebridge/homebridge-config-ui-x) and [plugin-ui-utils](https://github.com/homebridge/plugin-ui-utils) by the Homebridge team.
+- [fakegato-history](https://github.com/simont77/fakegato-history) by [@simont77](https://github.com/simont77) (Eve history), [MQTT.js](https://github.com/mqttjs/MQTT.js) and [Node.js](https://nodejs.org).
+
+**Tools we used to build and test it**
+- [Mocha](https://mochajs.org), [Chai](https://www.chaijs.com), [ESLint](https://eslint.org), [globals](https://github.com/sindresorhus/globals), [eslint-plugin-no-autofix](https://github.com/aladdin-add/eslint-plugin), [GitHub Actions](https://github.com/features/actions) and the [Homebridge Raspberry Pi image](https://github.com/homebridge/homebridge-raspbian-image).
+- [androguard](https://github.com/androguard/androguard) and [REA](https://github.com/morluto/rea) by [@morluto](https://github.com/morluto), for studying the BroadLink app; [python-qrcode](https://github.com/lincolnloop/python-qrcode) and [PyPNG](https://gitlab.com/drj11/pypng) for pairing QR codes.
+- [Claude Code](https://claude.com/claude-code) by [Anthropic](https://www.anthropic.com), the AI pair programmer, and Google Chrome with Claude in Chrome for UI testing and the documentation screenshots.
+- [docsify](https://docsify.js.org), [docsify-copy-code](https://github.com/jperasmus/docsify-copy-code), [Prism](https://prismjs.com) and [jsDelivr](https://www.jsdelivr.com) for the documentation site.
+
+**Referenced in the docs:** [Home Assistant](https://www.home-assistant.io/integrations/broadlink/), [SmartIR](https://github.com/smartHomeHub/SmartIR), [irdb](https://github.com/probonopd/irdb), [Remote Central](https://www.remotecentral.com), [Zigbee2MQTT](https://www.zigbee2mqtt.io) and the [Eve app](https://www.evehome.com/en/eve-app).
+
+Missed someone? Please [open an issue](https://github.com/pirates-killer/homebridge-broadlink-hub/issues).
+
+## Trademarks
+
+BroadLink is a trademark of Hangzhou BroadLink Technology Co., Ltd. Apple, HomeKit, Siri and Apple TV are trademarks of Apple Inc. Eve is a trademark of Eve Systems GmbH. This project is independent and not affiliated with or endorsed by any of them.
+
+## Licence
+
+Apache License 2.0; see [LICENSE](LICENSE). Contains code derived from homebridge-broadlink-rm (Apache-2.0); see [NOTICE](NOTICE).

@@ -57,4 +57,8 @@ How the plugin is put together, the BroadLink wire protocol, the standalone clie
 
 The BroadLink RM is a "universal remote" on your Wi-Fi. It can **record** the signal a remote control sends (learning) and **replay** it on demand. BroadLink Hub stores those recordings ("codes") in your Homebridge config and replays the right one when you tap something in the Home app.
 
+## Thanks
+
+BroadLink Hub continues [homebridge-broadlink-rm](https://github.com/kiwi-cam/homebridge-broadlink-rm) by **@lprhodes** and **@kiwi-cam**, and builds on [python-broadlink](https://github.com/mjg59/python-broadlink), [Homebridge](https://github.com/homebridge/homebridge) and many other projects. See [Special thanks & credits](credits.md) for everyone and every tool involved.
+
 ?> Everything stays on your local network. The plugin talks to the BroadLink directly; the BroadLink cloud and app are only needed once, to put the device on your Wi-Fi.

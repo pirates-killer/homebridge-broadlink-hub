@@ -16,3 +16,6 @@ device discovery and code learning. See CHANGELOG.md for details.
 Device type identifiers were cross-checked against python-broadlink
 (https://github.com/mjg59/python-broadlink, MIT License). No code from it is
 included; test vectors in test/fixtures were generated with it.
+
+Full acknowledgements of the people, projects and tools this work builds on:
+README.md ("Special thanks & credits") and docs/credits.md.

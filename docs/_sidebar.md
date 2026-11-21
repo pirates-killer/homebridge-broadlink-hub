@@ -43,3 +43,5 @@
   - [Settings page internals](developer/settings-ui.md)
   - [Testing](developer/testing.md)
   - [Contributing & releasing](developer/contributing.md)
+
+- [Special thanks & credits](credits.md)
