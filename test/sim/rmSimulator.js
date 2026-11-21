@@ -8,6 +8,9 @@ const dgram = require('dgram');
 const crypto = require('crypto');
 const P = require('../../lib/broadlink/protocol');
 
+// Own reference: tests may stub P.estimateAirtime on the client side.
+const airtimeOf = P.estimateAirtime;
+
 class RMSimulator {
   constructor({ devtype = 0x520b, mac = '34ea345ac0de', rm4 = true, locked = false, host = '127.0.0.1', port = 0 } = {}) {
     Object.assign(this, { devtype, rm4, locked, host, port });
@@ -21,6 +24,13 @@ class RMSimulator {
     this.replyDelay = 0; // ms before replying
     this.lenient = false; // accept any RM4 length field (benchmarking old clients)
     this.requests = []; // { command, devtype, count, sub, t }
+    // Transmitting takes the code's airtime. 'off': instant. 'reply-after': the
+    // RM answers once it has transmitted. 'reply-before': it answers at once and
+    // then transmits. In both modes a request arriving mid-transmission is only
+    // handled when the transmission has finished (like a busy RM).
+    this.airtimeMode = 'off';
+    this.busyUntil = 0;
+    this.overlapped = 0; // requests that arrived while the RM was still transmitting
   }
 
   start() {
@@ -80,6 +90,11 @@ class RMSimulator {
       return;
     }
     if (msg.length < 0x38) {return;}
+    if (this.airtimeMode !== 'off' && performance.now() < this.busyUntil) {
+      this.overlapped += 1;
+      setTimeout(() => this._onMessage(msg, rinfo), this.busyUntil - performance.now() + 1);
+      return;
+    }
     if (this.dropNext > 0) {this.dropNext -= 1; return;}
 
     const command = msg[0x26];
@@ -113,6 +128,11 @@ class RMSimulator {
         this.sent.push(data.toString('hex'));
         this.sentAt = this.sentAt || [];
         this.sentAt.push(req.t);
+        if (this.airtimeMode !== 'off') {
+          const air = airtimeOf(data);
+          this.busyUntil = performance.now() + air;
+          if (this.airtimeMode === 'reply-after') {return void setTimeout(ok, air);}
+        }
         return ok();
       case P.RM.ENTER_LEARNING:
         // learnDelay: polls before the simulated user presses the button (re-armed per attempt)
