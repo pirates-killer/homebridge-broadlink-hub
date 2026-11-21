@@ -190,6 +190,13 @@ describe('Broadlink registry', function () {
     assert.ok(sim.requests.every((r) => r.devtype === 0x6026));
   });
 
+  it('probe resends when the first hello gets no answer (RM waking up)', async () => {
+    sim.dropHellos = 2;
+    const hello = await bl.probe('127.0.0.1', sim.port);
+    assert.ok(hello, 'probe should succeed on a resend');
+    assert.strictEqual(hello.devtype, 0x6026);
+  });
+
   it('warns about locked devices', async () => {
     sim.locked = true;
     const logs = [];

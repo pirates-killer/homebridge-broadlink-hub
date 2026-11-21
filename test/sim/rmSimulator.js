@@ -69,6 +69,7 @@ class RMSimulator {
 
   _onMessage(msg, rinfo) {
     if (msg.length === 0x30 && msg[0x26] === P.CMD.HELLO) {
+      if (this.dropHellos > 0) {this.dropHellos -= 1; return;} // sleeping Wi-Fi
       const r = Buffer.alloc(0x80);
       r[0x26] = P.CMD.HELLO_REPLY;
       r.writeUInt16LE(this.devtype, 0x34);
