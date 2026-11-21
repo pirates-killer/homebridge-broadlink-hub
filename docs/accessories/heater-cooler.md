@@ -1,4 +1,6 @@
-# Heater Cooler
+# Heater / cooler <span class="badge adv">advanced</span>
+
+`"type": "heater-cooler"`. A heater-cooler tile with separate heating and cooling thresholds, fan speeds and swing; for ACs with richer controls than the [air conditioner](accessories/air-conditioner.md) accessory. It is configured in the accessory's JSON tab. Temperature sources work as described in [Sensors & MQTT](advanced/sensors.md).
 
 ## Configuration keys and usage
 | key | description | example | default |

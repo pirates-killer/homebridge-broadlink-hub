@@ -205,7 +205,7 @@
 
   const onOff = (acc) => (typeof acc.data === 'string'
     ? [code(['data'], 'Code', 'Sent when turned on.'), { kind: 'split' }]
-    : [code(['data', 'on'], 'On code'), code(['data', 'off'], 'Off code', 'Leave empty if one button toggles power.')]);
+    : [code(['data', 'on'], 'On code'), code(['data', 'off'], 'Off code', 'Empty = nothing is sent when turned off. One power button? Use the same code as above.')]);
 
   const TV_KEYS = [['arrowUp', 'Up'], ['arrowDown', 'Down'], ['arrowLeft', 'Left'], ['arrowRight', 'Right'], ['select', 'OK / Select'],
     ['back', 'Back'], ['exit', 'Exit'], ['info', 'Info'], ['playPause', 'Play / Pause'], ['rewind', 'Rewind'],
@@ -227,7 +227,7 @@
       bool(['hideSwingMode'], 'Hide swing in the Home app'), bool(['hideRotationDirection'], 'Hide direction in the Home app')] },
     tv: { label: 'TV / receiver', desc: 'Power, inputs, remote keys, volume', fields: () => [
       choice(['subType'], 'Shown in the Home app as', [['tv', 'TV'], ['stb', 'Set-top box'], ['receiver', 'Audio receiver'], ['stick', 'Streaming stick']]),
-      code(['data', 'on'], 'Power on'), code(['data', 'off'], 'Power off', 'Leave empty if one button toggles power.'),
+      code(['data', 'on'], 'Power on'), code(['data', 'off'], 'Power off', 'Empty = nothing is sent when turned off. One power button? Use the same code as above.'),
       { kind: 'tvInputs' },
       section('Volume'), code(['data', 'volume', 'up'], 'Volume up'), code(['data', 'volume', 'down'], 'Volume down'), code(['data', 'volume', 'mute'], 'Mute'),
       section('Remote (Control Centre remote)'), ...TV_KEYS.map(([k, l]) => code(['data', 'remote', k], l))] },
@@ -321,7 +321,7 @@
     const more = h('select', { class: 'form-control' }, h('option', { value: '' }, 'More types (set up in JSON)…'),
       MORE_TYPES.map(([k, l]) => h('option', { value: k }, l)));
     more.addEventListener('change', () => {if (more.value) {pick(more.value); setTab('json');}});
-    box.append(h('div', { class: 'bh-type' }, more));
+    box.append(h('div', { class: 'bh-type-more' }, more));
   }
 
   function renderEditorBody() {

@@ -20,6 +20,7 @@
   .bh-code-set { color: #28a745; }
   .bh-code-row { display: flex; align-items: center; gap: .5rem; padding: .3rem 0; border-top: 1px solid rgba(127, 127, 127, .15); }
   .bh-code-row > .bh-label { flex: 1 1 auto; }
+  .bh-code-row > span { white-space: nowrap; flex-shrink: 0; }
   .bh-section { margin-top: 1rem; font-weight: 600; font-size: .9rem; }
   .bh-grid { border-collapse: collapse; font-size: .85rem; }
   .bh-grid td, .bh-grid th { padding: .15rem .25rem; text-align: center; }
@@ -31,8 +32,10 @@
   .bh-tabs { display: flex; gap: .25rem; margin: .75rem 0; }
   .bh-hidden { display: none !important; }
   .bh-types { display: grid; grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr)); gap: .5rem; }
-  .bh-type { text-align: left; padding: .5rem .6rem; }
-  .bh-type small { display: block; opacity: .7; font-size: .75rem; white-space: normal; }
+  .bh-type { text-align: left; padding: .5rem .6rem; text-transform: none !important; letter-spacing: normal !important; }
+  .bh-type small { display: block; opacity: .75; font-size: .78rem; white-space: normal; text-transform: none; }
+  .bh-type-more { grid-column: span 2; display: flex; align-items: center; }
+  .bh-type-more select { width: 100%; }
   .bh-sticky-note { font-size: .85rem; padding: .5rem .75rem; border-radius: .4rem; background: rgba(29, 122, 243, .1); margin-bottom: 1rem; }
 </style>
 

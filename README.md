@@ -48,11 +48,11 @@ If your BroadLink is not found or refuses to connect, it is probably **locked**:
 | `fan`, `fanv1` | on, off, speeds, swing, direction |
 | `tv` | power, inputs, remote keys (Control Centre remote), volume |
 | `air-conditioner` | off, on, one code per mode and temperature |
-| `heater-cooler` | modes, temperatures, swing ([details](docs/heater-cooler.md)) |
+| `heater-cooler` | modes, temperatures, swing ([details](docs/accessories/heater-cooler.md)) |
 | `garage-door-opener`, `lock`, `window-covering`, `window` | open/close/stop, lock/unlock |
 | `air-purifier`, `humidifier-dehumidifier`, `temperatureSensor`, `humiditySensor`, `switch-multi`, `switch-repeat`, `switch-multi-repeat` | see the JSON tab |
 
-Every option of homebridge-broadlink-rm works unchanged. Its option reference is at [broadlink.kiwicam.nz](https://broadlink.kiwicam.nz). The settings page shows the common options as a form, and every option in each accessory's **JSON** tab.
+Every option of homebridge-broadlink-rm works unchanged. **[Full documentation](https://pirates-killer.github.io/homebridge-broadlink-hub/)** (also in [`docs/`](docs/README.md)): a step-by-step guide with screenshots, every option with its default, and a developer reference. The settings page shows the common options as a form, and every option in each accessory's **JSON** tab.
 
 ## Connection options
 

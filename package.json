@@ -39,7 +39,6 @@
     "lib",
     "homebridge-ui",
     "config.schema.json",
-    "docs",
     "examples",
     "README.md",
     "CHANGELOG.md",

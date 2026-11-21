@@ -1,0 +1,45 @@
+- [Home](/)
+
+- Getting started <span class="badge user">everyone</span>
+  - [Requirements](guide/requirements.md)
+  - [Install](guide/install.md)
+  - [First setup, step by step](guide/first-setup.md)
+  - [Learning codes](guide/learning-codes.md)
+  - [Using it in the Home app](guide/home-app.md)
+  - [Coming from homebridge-broadlink-rm](guide/migrating.md)
+  - [Troubleshooting & FAQ](guide/troubleshooting.md)
+
+- Configuration <span class="badge adv">advanced</span>
+  - [How the config is organised](advanced/config.md)
+  - [Platform & connection options](advanced/platform.md)
+  - [Options every accessory has](advanced/common-options.md)
+  - [Codes: formats, repeats, sequences](advanced/codes.md)
+  - [Several BroadLinks, child bridges](advanced/multiple-devices.md)
+  - [Temperature & humidity sources, MQTT](advanced/sensors.md)
+  - [State from ping / ARP](advanced/ping.md)
+
+- Accessory reference <span class="badge adv">advanced</span>
+  - [Overview](accessories/README.md)
+  - [Switch](accessories/switch.md)
+  - [Outlet](accessories/outlet.md)
+  - [Light](accessories/light.md)
+  - [Fan](accessories/fan.md)
+  - [TV / receiver](accessories/tv.md)
+  - [Air conditioner](accessories/air-conditioner.md)
+  - [Heater / cooler](accessories/heater-cooler.md)
+  - [Air purifier](accessories/air-purifier.md)
+  - [Humidifier / dehumidifier](accessories/humidifier-dehumidifier.md)
+  - [Garage door](accessories/garage-door-opener.md)
+  - [Lock](accessories/lock.md)
+  - [Blind / curtain](accessories/window-covering.md)
+  - [Temperature & humidity sensors](accessories/sensors.md)
+  - [Multi-code & repeat switches](accessories/switch-multi.md)
+  - [Learn switches](accessories/learn-code.md)
+
+- Developers <span class="badge dev">developer</span>
+  - [Architecture](developer/architecture.md)
+  - [BroadLink protocol](developer/protocol.md)
+  - [Using lib/broadlink](developer/library.md)
+  - [Settings page internals](developer/settings-ui.md)
+  - [Testing](developer/testing.md)
+  - [Contributing & releasing](developer/contributing.md)

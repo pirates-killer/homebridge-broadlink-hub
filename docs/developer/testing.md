@@ -1,4 +1,4 @@
-# Testing BroadLink Hub
+# Testing <span class="badge dev">developer</span>
 
 Four stages, from no hardware to the real bridge. Each stage catches things the previous one can't.
 
@@ -9,6 +9,16 @@ npm run lint && npm test          # protocol (vs python-broadlink vectors), devi
                                   # settings backend, state-file compatibility, legacy suite
 npm run test:e2e -- <storage-dir> --bench
 ```
+
+| Suite | Covers |
+| --- | --- |
+| `test/protocol.test.js` | Packet codec against python-broadlink vectors; RMDevice against the simulator: acknowledgements, re-login after reboot, no double send, retries with the same counter, ordering, `sendGap`, stale-reply rejection, adaptive timeout, keepalive, hostnames, startup queueing, probe resends |
+| `test/ui-server.test.js` | The settings backend driven over IPC like the Homebridge UI does: probe, scan, code conversion, test send, IR and RF learning with events, cancel |
+| `test/persistence.test.js` | State files written by node-persist 2 (the old plugin) read and written back in the same format |
+| `test/package.test.js` | Packs the plugin like `npm publish`, unpacks it alone, loads it, and checks every relative import targets a shipped file |
+| legacy suites | Accessory behaviour inherited from homebridge-broadlink-rm (tests that also fail on its last release are listed in `test/known-legacy-failures.js` and skipped) |
+
+The RM simulator (`test/sim/rmSimulator.js`) answers like a real RM over UDP and has knobs for failure modes: `dropNext` (request lost), `muteNext` (reply lost after executing), `replyDelay`, `reboot()` (session lost → −7), `locked`, `dropHellos`, `learnDelay` / `frequencyDelay` (simulated button presses), `sensor`. Run it standalone with `node test/sim/rmSimulator.js 47123`.
 
 `test:e2e` boots real Homebridge with the `config.json` in `<storage-dir>` against the RM simulator. The config's first `hosts` entry must point at `127.0.0.1:<port>`, and the bridge should be bound to `lo`. It drives switches, fan, AC and TV over HAP, power-cycles the simulated RM, fails on any Homebridge/HAP warning, and with `--bench` prints tap-to-code latency.
 

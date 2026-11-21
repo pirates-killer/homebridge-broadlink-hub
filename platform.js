@@ -33,6 +33,9 @@ const classTypes = {
   'heater-cooler': Accessory.HeaterCooler
 }
 
+// Transport options accepted at platform level and per hosts entry.
+const CONNECTION_OPTIONS = ['timeout', 'retries', 'sendGap', 'adaptiveTimeout'];
+
 let homebridgeRef
 
 const BroadlinkRMPlatform = class extends HomebridgePlatform {
@@ -111,7 +114,7 @@ const BroadlinkRMPlatform = class extends HomebridgePlatform {
 
     // Platform-wide transport defaults; any host entry may override them.
     const deviceOptions = {};
-    for (const k of ['timeout', 'retries', 'sendGap']) {
+    for (const k of CONNECTION_OPTIONS) {
       if (config[k] !== undefined) {deviceOptions[k] = config[k];}
     }
 
@@ -134,7 +137,7 @@ const BroadlinkRMPlatform = class extends HomebridgePlatform {
       assert(mac, `\x1b[31m[CONFIG ERROR] \x1b[0m Each object in the \x1b[33mhosts\x1b[0m option should contain a unique value for \x1b[33mmac\x1b[0m (e.g. "34:ea:34:e7:d7:28").`);
 
       const options = {};
-      for (const k of ['timeout', 'retries', 'sendGap']) {
+      for (const k of CONNECTION_OPTIONS) {
         if (host[k] !== undefined) {options[k] = host[k];}
       }
 

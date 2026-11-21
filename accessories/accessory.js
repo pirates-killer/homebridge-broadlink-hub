@@ -11,7 +11,8 @@ class BroadlinkRMAccessory extends HomebridgeAccessory {
   constructor (log, config = {}, serviceManagerType) {
     if (!config.name) {config.name = "Unknown Accessory"}
 
-    config.resendDataAfterReload = config.resendHexAfterReload;
+    // Both names work; the old one used to overwrite the new one unconditionally.
+    config.resendDataAfterReload = config.resendDataAfterReload ?? config.resendHexAfterReload;
     if (config.host) {
       //Clean up MAC address formatting
       config.host = config.host.toLowerCase();

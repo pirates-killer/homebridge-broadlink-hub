@@ -48,6 +48,7 @@
       "timeout": { "title": "Reply timeout cap (ms)", "type": "integer", "minimum": 100, "maximum": 10000 },
       "retries": { "title": "Resends after no reply", "type": "integer", "minimum": 0, "maximum": 5 },
       "sendGap": { "title": "Pause between codes (ms)", "type": "integer", "minimum": 0, "maximum": 5000 },
+      "adaptiveTimeout": { "title": "Adapt the reply timeout to the network", "type": "boolean", "default": true },
       "deviceDiscoveryTimeout": { "title": "Discovery time (s)", "type": "integer", "minimum": 5, "maximum": 600 }
     }
   }

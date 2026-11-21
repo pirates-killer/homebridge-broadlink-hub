@@ -115,12 +115,21 @@ class RMSimulator {
         this.sentAt.push(req.t);
         return ok();
       case P.RM.ENTER_LEARNING:
-      case P.RM.CANCEL_SWEEP:
-      case P.RM.SWEEP_FREQUENCY:
+        // learnDelay: polls before the simulated user presses the button (re-armed per attempt)
+        if (this.learnDelay) {this.learnAfter = this.learnDelay;}
+        this.mode = 'ir';
         return ok();
-      case P.RM.CHECK_DATA:
+      case P.RM.SWEEP_FREQUENCY:
+        if (this.frequencyDelay) {this.frequencyAfter = this.frequencyDelay;}
+        this.mode = 'rf';
+        return ok();
+      case P.RM.CANCEL_SWEEP:
+        return ok();
+      case P.RM.CHECK_DATA: {
         if (this.learnAfter > 0) {this.learnAfter -= 1; return fail(-10);} // user hasn't pressed yet
-        return this.learned ? ok(Buffer.from(this.learned, 'hex')) : fail(-10);
+        const code = this.mode === 'rf' && this.learnedRF ? this.learnedRF : this.learned;
+        return code ? ok(Buffer.from(code, 'hex')) : fail(-10);
+      }
       case P.RM.CHECK_FREQUENCY: {
         if (this.frequencyAfter > 0) {this.frequencyAfter -= 1; return ok(Buffer.alloc(5));}
         const out = Buffer.alloc(5);
@@ -130,6 +139,7 @@ class RMSimulator {
       }
       case P.RM.FIND_RF_PACKET:
         this.rfPacketPayload = data.toString('hex');
+        if (this.learnDelay) {this.learnAfter = this.learnDelay;}
         return ok(Buffer.from([1]));
       case P.RM.CHECK_SENSORS:
       case P.RM.CHECK_TEMPERATURE: {
