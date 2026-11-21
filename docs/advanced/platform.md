@@ -45,7 +45,7 @@ Set them at platform level for all devices, or inside a `hosts` entry for one de
 
 | Option | Default | Description |
 | --- | --- | --- |
-| `timeout` | `2000` | Upper limit in ms for waiting on a reply. The actual wait adapts to your network: it learns the round trip of real replies (typically 10–30 ms) and waits about 4× that, but at least 250 ms (400 ms for codes). A lost reply therefore holds up the next command for about a quarter of a second, not 2 seconds. |
+| `timeout` | `2000` | Upper limit in ms for waiting on a reply. The actual wait adapts to your network: it learns the round trip of real replies (typically 10–30 ms) and waits about 4× that, but at least 250 ms (400 ms for codes, plus the code's airtime). A lost reply therefore holds up the next command for about a quarter of a second, not 2 seconds. |
 | `retries` | `0` | How often to resend a code that got no reply. The identical packet is resent. **Keep 0 for toggle codes**: if the code worked but the reply got lost, a resend toggles the device back. Useful for discrete codes (separate on/off) on flaky Wi-Fi. |
 | `sendGap` | `0` | Minimum ms between two transmissions through the same BroadLink. Raise it (100–300) if a device misses codes sent in quick succession, for example in scenes. |
 | `adaptiveTimeout` | `true` | Set to `false` to always wait the full `timeout`. |
@@ -56,6 +56,7 @@ Set them at platform level for all devices, or inside a `hosts` entry for one de
 | --- | --- |
 | Startup | Sends a hello to each `hosts` entry (or a broadcast plus a subnet sweep without `hosts`), then logs in. Commands issued meanwhile are queued, not dropped. |
 | Every command | One request at a time per BroadLink, each waiting for its acknowledgement, matched by packet counter. |
+| Every code | Its airtime (how long the BroadLink transmits it) is calculated from the code's pulses. The next command waits until it has been transmitted, and its reply may take that long on top of the network round trip. Long RF codes are never cut short or overlapped. |
 | Device reports "session expired" | Logs in again and resends; the device had rejected the command, so this can't double-fire. |
 | Every 30 s while idle | A tiny authenticated keepalive. If the BroadLink rebooted, the plugin logs back in now, so your next tap doesn't wait. |
 | Device stops answering | After 3 missed replies it's logged as not responding; when it answers again it's logged as reachable and logged in again. |

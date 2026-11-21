@@ -90,5 +90,6 @@ Codes sent with `0x02` (and returned by `0x04`): byte 0 type (`0x26` IR, `0xb2` 
 | Reply timeout (local) | 2000 ms fixed | adaptive: ≈ 4 × measured RTT, clamped to 250 ms (400 ms for codes) … `timeout` (2000) |
 | Send count | 1 | 1 (`retries` resends the identical packet) |
 | Reply matching | message type | packet counter (device echoes it) |
+| Code pacing | — | next request waits for the previous code's airtime (sum of pulses × 2⁻¹⁵ s; × (repeat + 1) for IR; capped at 3 s), and a code's reply timeout includes its airtime |
 
 Measured on an RM4 Pro over Wi-Fi: round trip p50 15 ms, p90 20 ms, max 29 ms; login 95 ms.

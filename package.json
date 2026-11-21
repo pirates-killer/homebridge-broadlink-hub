@@ -1,7 +1,7 @@
 {
   "name": "homebridge-broadlink-hub",
   "displayName": "BroadLink Hub",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Fast, reliable Apple Home control for BroadLink RM remotes (RM mini, RM Pro, RM4, RM4 Pro): switches, lights, fans, TVs, air conditioners and more over IR and RF, with code learning in the Homebridge UI. Drop-in successor to homebridge-broadlink-rm.",
   "license": "Apache-2.0",
   "author": "pirates-killer",

@@ -2,7 +2,12 @@
 
 All notable changes to this project are documented here. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project uses [Semantic Versioning](https://semver.org/).
 
-## [0.1.0] - unreleased
+## [0.1.1] - 2026-11-22
+
+### Fixed
+- Codes sent back to back (scenes, or one Home-app tap that changes two things, such as fan speed and power) could reach the BroadLink while it was still transmitting the previous code. It then answered late (logged as `code not acknowledged`) or, with the old plugin which never waited for replies, dropped the code. Each code's airtime is now calculated from its pulse data: the next code waits until the previous one has been transmitted, and a code's reply may take its airtime on top of the network round trip. Short IR codes keep their fast pace.
+
+## [0.1.0] - 2026-11-21
 
 First release of BroadLink Hub, the successor to homebridge-broadlink-rm 4.4.21 (whose history is summarised below).
 

@@ -38,7 +38,9 @@ Usually one of these:
 
 ## Codes in a scene go missing
 
-When several codes are sent in a row, some devices miss one. BroadLink Hub already sends them one at a time; raise **Pause between codes** to 100–300 ms.
+When several codes are sent in a row, some devices miss one. BroadLink Hub already sends them one at a time and waits until each code has been fully transmitted (its airtime) before the next. If a device still needs a moment to process one code before it accepts the next, raise **Pause between codes** to 100–300 ms.
+
+?> Seeing `code not acknowledged` right after another code in versions before 0.1.1? That was a long RF code still being transmitted when the next request arrived. 0.1.1 fixed it; update the plugin.
 
 ## The air conditioner shows the wrong temperature
 
